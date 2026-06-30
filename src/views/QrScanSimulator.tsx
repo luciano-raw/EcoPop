@@ -128,7 +128,7 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
   };
 
   return (
-    <div style={{
+    <div className="animate-slide-up" style={{
       maxWidth: '600px',
       width: '100%',
       margin: '60px auto',
@@ -146,36 +146,10 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
           border: '1px solid var(--border-active)'
         }}>
           {/* Animated Scanning Circle */}
-          <div style={{
-            position: 'relative',
-            width: '120px',
-            height: '120px',
-            borderRadius: '50%',
-            border: '2px dashed var(--color-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+          <div className="scanner-frame">
             <QrIcon size={64} style={{ color: 'var(--color-primary)' }} />
-            {/* Scan beam line animation */}
-            <div style={{
-              position: 'absolute',
-              width: '90%',
-              height: '3px',
-              backgroundColor: 'var(--color-eco)',
-              left: '5%',
-              top: '50%',
-              boxShadow: '0 0 10px var(--color-eco)',
-              animation: 'scanBeam 1.5s infinite ease-in-out'
-            }} />
+            <div className="scanner-laser" />
           </div>
-
-          <style>{`
-            @keyframes scanBeam {
-              0%, 100% { top: 15%; opacity: 0.3; }
-              50% { top: 85%; opacity: 1; }
-            }
-          `}</style>
 
           <div>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 700 }}>Procesando Vaso EcoPop</h3>
@@ -196,9 +170,11 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
           gap: '24px',
           border: '2px solid var(--color-eco)'
         }}>
-          <CheckCircle size={72} style={{ color: 'var(--color-eco)' }} />
+          <div className="animate-bounce-in">
+            <CheckCircle size={72} style={{ color: 'var(--color-eco)' }} />
+          </div>
           
-          <div>
+          <div className="animate-bounce-in" style={{ animationDelay: '0.2s' } as any}>
             <span style={{
               fontSize: '0.85rem',
               color: 'var(--color-eco)',
@@ -209,7 +185,7 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
             }}>
               ¡Vasos Reciclados Correctamente!
             </span>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginTop: '16px' }} className="text-gradient-eco">
+            <h2 style={{ fontSize: '3.2rem', fontWeight: 900, marginTop: '16px', textShadow: '0 0 25px rgba(16, 185, 129, 0.35)' }} className="text-gradient-eco">
               +{pointsEarned} Puntos
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '400px', margin: '8px auto 0' }}>

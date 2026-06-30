@@ -94,7 +94,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, onLogout
   const progressPercent = Math.min((user.points / nextRewardCost) * 100, 100);
 
   return (
-    <div style={{
+    <div className="animate-slide-up" style={{
       maxWidth: '1000px',
       width: '100%',
       margin: '40px auto',
@@ -135,8 +135,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, onLogout
         }
       } as any}>
         {/* Cinépolis Club EcoPop Card */}
-        <div className="glass-panel" style={{
-          background: 'linear-gradient(135deg, #09173d 0%, #001a4e 50%, #04091a 100%)',
+        <div className="glass-panel hologram-card" style={{
           border: '1px solid var(--border-active)',
           borderRadius: '20px',
           padding: '28px',

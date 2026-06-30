@@ -5,7 +5,7 @@ import { QrScanSimulator } from './views/QrScanSimulator';
 import { RewardsCatalog } from './views/RewardsCatalog';
 import { MyCoupons } from './views/MyCoupons';
 import { AdminPanel } from './views/AdminPanel';
-import { User, X } from 'lucide-react';
+import { User, X, Home, ShoppingBag, Ticket, QrCode } from 'lucide-react';
 import './App.css';
 
 function App() {
@@ -150,7 +150,7 @@ function App() {
           </div>
 
           {/* Navigation Links */}
-          <nav style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <nav className="desktop-only" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button 
               onClick={() => handleNavigate('dashboard')}
               style={{
@@ -335,6 +335,38 @@ function App() {
           </p>
         </div>
       </footer>
+
+      {/* Mobile Floating Tab Bar */}
+      <div className="mobile-tab-bar mobile-only">
+        <button 
+          onClick={() => handleNavigate('dashboard')} 
+          className={`mobile-tab-btn ${currentPage === 'dashboard' ? 'mobile-tab-btn-active' : ''}`}
+        >
+          <Home size={20} />
+          <span>Panel</span>
+        </button>
+        <button 
+          onClick={() => handleNavigate('catalog')} 
+          className={`mobile-tab-btn ${currentPage === 'catalog' ? 'mobile-tab-btn-active' : ''}`}
+        >
+          <ShoppingBag size={20} />
+          <span>Premios</span>
+        </button>
+        <button 
+          onClick={() => handleNavigate('coupons')} 
+          className={`mobile-tab-btn ${currentPage === 'coupons' ? 'mobile-tab-btn-active' : ''}`}
+        >
+          <Ticket size={20} />
+          <span>Cupones</span>
+        </button>
+        <button 
+          onClick={() => handleNavigate('admin')} 
+          className={`mobile-tab-btn ${currentPage === 'admin' ? 'mobile-tab-btn-active' : ''}`}
+        >
+          <QrCode size={20} />
+          <span>Admin</span>
+        </button>
+      </div>
 
       {/* Login Modal */}
       {showLoginModal && (
