@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { dbService, type EcoUser, type QrCode } from '../services/db';
 import { triggerConfetti } from '../components/ConfettiCelebration';
 import { QrCode as QrIcon, CheckCircle, XCircle, AlertTriangle, UserPlus, ArrowRight, Home, ShoppingBag, HelpCircle } from 'lucide-react';
@@ -11,6 +11,7 @@ interface QrScanSimulatorProps {
 }
 
 export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentUser, onLoginSuccess, onNavigate }) => {
+  const lastProcessedCodeRef = useRef('');
   const [loading, setLoading] = useState(true);
   const [scanStatus, setScanStatus] = useState<'success' | 'already_claimed' | 'invalid' | 'need_auth' | 'loading'>('loading');
   const [qrInfo, setQrInfo] = useState<QrCode | null>(null);
@@ -23,6 +24,13 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
   const [formError, setFormError] = useState('');
 
   useEffect(() => {
+    if (lastProcessedCodeRef.current === code) return;
+    lastProcessedCodeRef.current = code;
+
+    // Reset loading and status
+    setLoading(true);
+    setScanStatus('loading');
+
     // Process the QR code scan
     if (!code) {
       setScanStatus('invalid');
