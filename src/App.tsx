@@ -305,6 +305,7 @@ function App() {
             currentUser={currentUser}
             onLoginSuccess={handleLoginSuccess}
             onNavigate={handleNavigate}
+            onPointsUpdate={handlePointsUpdate}
           />
         )}
       </main>

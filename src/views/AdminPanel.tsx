@@ -61,6 +61,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onSimulateScan }) => {
         {/* QR Code Generator Component */}
         <QRGenerator onCodeGenerated={loadQrs} />
 
+        {/* Fair Mode Settings Card */}
+        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '12px', border: '1px solid var(--border-eco)' }}>
+          <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-eco)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            ⚙️ Modo Feria (Presentación)
+          </h4>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+            Permite escanear el mismo código QR físico infinitas veces para demostraciones de acumulación de puntos rápidas en el mismo celular.
+          </p>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', cursor: 'pointer', userSelect: 'none', background: 'rgba(255,255,255,0.02)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+            <input 
+              type="checkbox" 
+              checked={dbService.isFairMode()}
+              onChange={(e) => {
+                dbService.setFairMode(e.target.checked);
+                loadQrs(); // trigger re-render
+              }}
+              style={{ width: '18px', height: '18px', accentColor: 'var(--color-eco)', cursor: 'pointer' }}
+            />
+            <span><strong>Multi-escaneo activo</strong> (Feria)</span>
+          </label>
+        </div>
+
         {/* System Reset Card */}
         <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '12px', border: '1px solid rgba(239,68,68,0.2)' }}>
           <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-danger)' }}>Operaciones del Sistema</h4>

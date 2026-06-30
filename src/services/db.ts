@@ -139,6 +139,17 @@ class DbService {
     if (!localStorage.getItem('ecopop_user_coupons')) {
       localStorage.setItem('ecopop_user_coupons', JSON.stringify([]));
     }
+    if (localStorage.getItem('ecopop_fair_mode') === null) {
+      localStorage.setItem('ecopop_fair_mode', 'true');
+    }
+  }
+
+  isFairMode(): boolean {
+    return localStorage.getItem('ecopop_fair_mode') !== 'false';
+  }
+
+  setFairMode(enabled: boolean) {
+    localStorage.setItem('ecopop_fair_mode', enabled ? 'true' : 'false');
   }
 
   // Get Current Active User from Session
@@ -233,9 +244,12 @@ class DbService {
       return { success: false, message: 'Este vaso ya ha sido reciclado y el código ya fue reclamado.' };
     }
 
-    // Mark QR as claimed
-    qr.isActive = false;
-    this.setLocalStorageItem('ecopop_qr_codes', qrs);
+    // Mark QR as claimed (ONLY if NOT in Fair Mode, so in Fair Mode QRs remain active infinitely)
+    const isFair = this.isFairMode();
+    if (!isFair) {
+      qr.isActive = false;
+      this.setLocalStorageItem('ecopop_qr_codes', qrs);
+    }
 
     // Record the claim
     const claims = this.getLocalStorageItem<ClaimedCode>('ecopop_claimed_codes');

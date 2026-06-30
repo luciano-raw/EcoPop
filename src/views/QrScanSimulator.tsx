@@ -8,9 +8,10 @@ interface QrScanSimulatorProps {
   currentUser: EcoUser | null;
   onLoginSuccess: (user: EcoUser) => void;
   onNavigate: (page: string) => void;
+  onPointsUpdate?: () => void;
 }
 
-export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentUser, onLoginSuccess, onNavigate }) => {
+export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentUser, onLoginSuccess, onNavigate, onPointsUpdate }) => {
   const lastProcessedCodeRef = useRef('');
   const [loading, setLoading] = useState(true);
   const [scanStatus, setScanStatus] = useState<'success' | 'already_claimed' | 'invalid' | 'need_auth' | 'loading'>('loading');
@@ -77,6 +78,11 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
     if (result.success && result.pointsEarned) {
       setPointsEarned(result.pointsEarned);
       setScanStatus('success');
+      
+      // Notify parent to reload user points
+      if (onPointsUpdate) {
+        onPointsUpdate();
+      }
       
       // Get updated user points to trigger confetti scale
       const updatedUser = dbService.getCurrentUser();
@@ -203,7 +209,7 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
           }}>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Tu balance actual:</p>
             <p style={{ fontSize: '1.25rem', fontWeight: 700 }}>
-              {currentUser?.points} Puntos acumulados en tu cuenta
+              {dbService.getCurrentUser()?.points} Puntos acumulados en tu cuenta
             </p>
           </div>
 
