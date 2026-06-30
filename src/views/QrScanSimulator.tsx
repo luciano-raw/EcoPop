@@ -31,23 +31,31 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
       return;
     }
 
-    const qr = dbService.getQrCode(code);
+    let qr = dbService.getQrCode(code);
     
+    // Auto-crear el código si no existe en la base de datos local de este dispositivo
+    // Esto permite que al escanear con el celular un código creado en la computadora funcione de inmediato
+    if (!qr) {
+      qr = dbService.createQrCode(code, 100);
+    }
+    
+    const finalQr = qr;
+
     // Simulate camera processing delay
     const timer = setTimeout(() => {
-      if (!qr) {
+      if (!finalQr) {
         setQrInfo(null);
         setScanStatus('invalid');
-        setErrorMsg(`El código QR "${code}" no existe en el sistema. Puedes crearlo en el panel de administrador.`);
+        setErrorMsg(`El código QR "${code}" no existe en el sistema.`);
       } else {
-        setQrInfo(qr);
-        if (!qr.isActive) {
+        setQrInfo(finalQr);
+        if (!finalQr.isActive) {
           setScanStatus('already_claimed');
         } else if (!currentUser) {
           setScanStatus('need_auth');
         } else {
           // Process claim immediately for logged-in user
-          performClaim(currentUser.id, qr.code);
+          performClaim(currentUser.id, finalQr.code);
         }
       }
       setLoading(false);
