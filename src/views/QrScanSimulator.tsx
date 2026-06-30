@@ -20,7 +20,6 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
   const [errorMsg, setErrorMsg] = useState('');
 
   // Register Form States (if need auth)
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [formError, setFormError] = useState('');
 
@@ -58,7 +57,8 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
         setErrorMsg(`El código QR "${code}" no existe en el sistema.`);
       } else {
         setQrInfo(finalQr);
-        if (!finalQr.isActive) {
+        const isFair = dbService.isFairMode();
+        if (!finalQr.isActive && !isFair) {
           setScanStatus('already_claimed');
         } else if (!currentUser) {
           setScanStatus('need_auth');
@@ -99,8 +99,8 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
     e.preventDefault();
     setFormError('');
 
-    if (!name.trim() || !email.trim()) {
-      setFormError('Por favor, completa todos los campos.');
+    if (!email.trim()) {
+      setFormError('Por favor, ingresa tu correo electrónico.');
       return;
     }
 
@@ -109,8 +109,12 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
       return;
     }
 
+    // Derive name from email (e.g. luciano.raw@gmail.com -> Luciano.raw)
+    const emailPrefix = email.trim().split('@')[0];
+    const derivedName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+
     // Register user
-    const newUser = dbService.loginOrRegister(name.trim(), email.trim());
+    const newUser = dbService.loginOrRegister(derivedName, email.trim());
     onLoginSuccess(newUser);
 
     // Perform the QR claim for the newly registered user
@@ -253,28 +257,10 @@ export const QrScanSimulator: React.FC<QrScanSimulatorProps> = ({ code, currentU
 
           <form onSubmit={handleRegisterAndClaim} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Nombre Completo</label>
-              <input 
-                type="text" 
-                placeholder="Ej: Juan Pérez" 
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{
-                  padding: '12px 16px',
-                  borderRadius: '8px',
-                  background: 'var(--bg-input)',
-                  border: '1px solid var(--border-light)',
-                  color: '#fff',
-                  fontSize: '0.95rem'
-                }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Correo Electrónico</label>
               <input 
                 type="email" 
-                placeholder="Ej: juan.perez@email.com" 
+                placeholder="Ej: ejemplo@correo.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{

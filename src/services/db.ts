@@ -240,12 +240,12 @@ class DbService {
     }
 
     const qr = qrs[qrIndex];
-    if (!qr.isActive) {
+    const isFair = this.isFairMode();
+    if (!qr.isActive && !isFair) {
       return { success: false, message: 'Este vaso ya ha sido reciclado y el código ya fue reclamado.' };
     }
 
     // Mark QR as claimed (ONLY if NOT in Fair Mode, so in Fair Mode QRs remain active infinitely)
-    const isFair = this.isFairMode();
     if (!isFair) {
       qr.isActive = false;
       this.setLocalStorageItem('ecopop_qr_codes', qrs);
